@@ -25,6 +25,7 @@ class Member(AbstractBaseUser, PermissionsMixin, TimestampedModelMixin):
     avatar = models.ImageField(upload_to='media/', null=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    is_association_admin = models.BooleanField(default=False)
     slug = models.SlugField(unique=True)
     associations = models.ManyToManyField('Association', related_name='member_association')
     user_permissions = models.ManyToManyField(
@@ -88,4 +89,13 @@ class Membership(models.Model):
     def __str__(self):
         return f"{self.member} - {self.association}"
     
+
+class Account(TimestampedModelMixin, models.Model):
+    bank_name = models.CharField(max_length=200)
+    account_number = models.CharField(max_length=100)
+    account_name = models.CharField(max_length=200)
+    association = models.ForeignKey(Association, on_delete=models.CASCADE)
+    
+    def __str__(self) -> str:
+        return f"{self.association.title} | {self.account_name} | {self.account_number}"
     
