@@ -75,6 +75,7 @@ class Membership(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
     association = models.ForeignKey(Association, on_delete=models.CASCADE)
     date_joined = models.DateTimeField(auto_now_add=True)
+    slug = models.SlugField(unique=True, default='')
     
     class Meta:
         unique_together = ['member', 'association']
@@ -88,6 +89,7 @@ class Account(TimestampedModelMixin, models.Model):
     account_number = models.CharField(max_length=100)
     account_name = models.CharField(max_length=200)
     association = models.ForeignKey(Association, on_delete=models.CASCADE)
+    slug = models.SlugField(unique=True, default="")
     
     def __str__(self) -> str:
         return f"{self.association.title} | {self.account_name} | {self.account_number}"
