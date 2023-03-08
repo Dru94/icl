@@ -27,7 +27,6 @@ class Member(AbstractBaseUser, PermissionsMixin, TimestampedModelMixin):
     is_staff = models.BooleanField(default=False)
     is_association_admin = models.BooleanField(default=False)
     slug = models.SlugField(unique=True)
-    associations = models.ManyToManyField('Association', related_name='member_association')
     user_permissions = models.ManyToManyField(
         Permission,
         verbose_name=_('user permissions'),
@@ -46,12 +45,6 @@ class Member(AbstractBaseUser, PermissionsMixin, TimestampedModelMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name', 'contact', 'national_id']
     
-    def clean(self):
-        # check the number of associations
-        count = self.associations.count()
-        if count < 1 or count > 3:
-            raise ValidationError('A member can only belong to one, two, or three associations.')
-    
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         super(Member, self).save(*args, **kwargs)
@@ -66,7 +59,7 @@ class Association(TimestampedModelMixin, models.Model):
     constitution = models.FileField(upload_to='constitutions/')
     contact = models.CharField(max_length=13)
     email = models.EmailField(unique=True)
-    members = models.ManyToManyField(settings.AUTH_USER_MODEL)
+    members = models.ManyToManyField(settings.AUTH_USER_MODEL, )
     slug = models.SlugField(unique=True)
     
     def save(self, *args, **kwargs):
