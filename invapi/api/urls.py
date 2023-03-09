@@ -2,7 +2,8 @@ from django.urls import path
 from .views import (MemberListView, AssociationListView, 
                     MemberRetrieveUpdateView, AssociationRetrieveUpdateView, 
                     MembershipListView, MembershipRetrieveUpdateView, 
-                    MemberDeleteView, AssociationDeleteView, AccountListView)
+                    MemberDeleteView, AssociationDeleteView, AccountListView, 
+                    MembershipCreateView)
 
 urlpatterns = [
     path('api/members/', MemberListView.as_view(), name='all_members'),
@@ -13,5 +14,6 @@ urlpatterns = [
     path('api/delete/<slug:slug>/', AssociationDeleteView.as_view(), name="del_association"),
     path('api/show/memberships/', MembershipListView.as_view(), name="all_memberships"),
     path('api/membership/<slug:slug>/', MembershipRetrieveUpdateView.as_view(), name="get_membership"),
+    path('api/add/membership/', MembershipCreateView.as_view(), name="add_membership"),
     path('api/all/accounts/', AccountListView.as_view(), name="all_accounts"),
 ]

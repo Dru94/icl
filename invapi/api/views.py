@@ -37,6 +37,10 @@ class MembershipListView(generics.ListCreateAPIView):
     queryset = Membership.objects.all()
     serializer_class = MembershipSerializer
     
+class MembershipCreateView(generics.CreateAPIView):
+    queryset = Membership.objects.all()
+    serializer_class = MembershipSerializer
+    
 class MembershipRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     queryset = Membership.objects.all()
     serializer_class = MembershipSerializer

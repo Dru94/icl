@@ -72,8 +72,8 @@ class Association(TimestampedModelMixin, models.Model):
 
 # model to define membership
 class Membership(models.Model):
-    member = models.ForeignKey(Member, on_delete=models.CASCADE)
-    association = models.ForeignKey(Association, on_delete=models.CASCADE)
+    member = models.ForeignKey(Member, on_delete=models.CASCADE, related_name='member')
+    association = models.ForeignKey(Association, on_delete=models.CASCADE, related_name='association')
     date_joined = models.DateTimeField(auto_now_add=True)
     slug = models.SlugField(unique=True, default='')
     
@@ -82,6 +82,21 @@ class Membership(models.Model):
     
     def __str__(self):
         return f"{self.member} - {self.association}"
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            # Generate slug from member and association names
+            member_name = self.member.name.replace(" ", "-")
+            association_name = self.association.title.replace(" ", "-")
+            self.slug = f"{member_name}-{association_name}"
+            # Check for existing slugs and add a number suffix to ensure uniqueness
+            existing_slugs = Membership.objects.filter(slug__startswith=self.slug).values_list("slug", flat=True)
+            if self.slug in existing_slugs:
+                suffix = 2
+                while f"{self.slug}-{suffix}" in existing_slugs:
+                    suffix += 1
+                self.slug = f"{self.slug}-{suffix}"
+        super().save(*args, **kwargs)
     
 
 class Account(TimestampedModelMixin, models.Model):
